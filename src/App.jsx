@@ -1,8 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const getDefaultLocalStorageValue = (key) =>{
+  const storedValue = localStorage.getItem(key);
+
+  if(!storedValue) {
+    return null;
+  }
+  try {
+    return JSON.parse(storedValue);
+  } catch {
+    return null;
+  }
+}
+
+
+// CUSTOM HOOKS
+const useStickyState = (localStorageKey, defaultValue) => {
+  const [state, setState] = useState(getDefaultLocalStorageValue(localStorageKey) ?? defaultValue);
+
+
+  useEffect(() => {
+    localStorage.setItem(localStorageKey, JSON.stringify(state));
+  }, [localStorageKey, state]);
+  return [state, setState]
+}
 
 export default function App() {
  
-  const [todos, setTodos] = useState([
+  const [todos, setTodos] = useStickyState("Ma Todo List",[
     {id:1, libelle:'todos', checked:false},
     {id:2, libelle:'setTodos', checked:true}
   ]);
@@ -13,6 +38,7 @@ export default function App() {
     setTodos([...todos, {
       id: Date.now(),
       libelle: todo,
+      checked: false,
     }]);
   };
 
@@ -22,11 +48,9 @@ export default function App() {
 
   }
 
-  console.log(todos.length)
+  // console.log(todos.length)
 
   const updateTodo = (id, newChecked)=> {
-    // console.log('updateTodo', id, newChecked);
-    // setTodos(todos.map((t) => t.id === id? {...t, libelle: newLibelle} : t));
     setTodos(
       todos.map((todo) => {
         if (todo.id === id) {
@@ -43,25 +67,9 @@ export default function App() {
   return (
     <div className="bg-gray-800 min-h-[100vh] w-full">
       <h1 className="p-2 text-3xl font-bold underline text-emerald-200">
-        Hello world!
+        Hello world! {todos.length}
       </h1>
-      <ul className="grid grid-cols-4 gap-2 p-5 list-disc list-inside">
-        {  
-        todos.length>0?
-          todos.map((todo) =>
-            <li key={todo.id} className="flex items-center justify-around gap-1 p-2 rounded-md bg-sky-200">
-              <input type="checkbox"
-               checked={todo.checked}
-               onChange={
-                ()=> updateTodo(todo.id, !todo.checked,)
-              } className="w-4 h-4 form-checkbox" />
-              <span className="flex-1">{todo.libelle}</span>
-              <button onClick={()=> {
-                deleteTodo(todo.id)
-              }} className="p-1 text-xs bg-red-800 border-2 rounded-lg text-gray-50">supprimer</button>
-            </li>) : <li className="text-yellow-600">Pas de todo</li>
-        }
-      </ul>
+      
       <div className="m-10">
         <form
           action={onAction} 
@@ -78,6 +86,24 @@ export default function App() {
           </button>
         </form>
       </div>
+
+      <ul className="grid grid-cols-2 gap-2 p-5 list-disc list-inside md:grid-cols-4">
+        {  
+        todos.length>0?
+          todos.map((todo) =>
+            <li key={todo.id} className="flex items-center justify-around gap-1 p-2 rounded-md bg-sky-200">
+              <input type="checkbox"
+               checked={todo.checked}
+               onChange={
+                ()=> updateTodo(todo.id, !todo.checked,)
+              } className="w-4 h-4 form-checkbox" />
+              <span className="flex-1">{todo.libelle}</span>
+              <button onClick={()=> {
+                deleteTodo(todo.id)
+              }} className="p-1 text-xs bg-red-800 border-2 rounded-lg text-gray-50">supprimer</button>
+            </li>) : <li className="text-yellow-600">Pas de todo</li>
+        }
+      </ul>
     </div>
   );
 }
