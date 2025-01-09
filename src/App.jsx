@@ -2,22 +2,41 @@ import { useState } from "react";
 
 export default function App() {
  
-  const [todos, setTodos] = useState([{id:1, libelle:'todos'}, {id:2, libelle:'setTodos'}]);
+  const [todos, setTodos] = useState([
+    {id:1, libelle:'todos', checked:false},
+    {id:2, libelle:'setTodos', checked:true}
+  ]);
 
   const onAction = async (formData) => {
     const todo = formData.get('todo');
-    // todos.unshift(todo);
-    // setTodos([...todos]);
+    
     setTodos([...todos, {
       id: Date.now(),
       libelle: todo,
     }]);
   };
-  //, todo]); };
 
   const deleteTodo = (id)=> {
+    if (confirm('Are you sure you want to delete '))
     setTodos(todos.filter((t) => t.id!== id));
 
+  }
+
+  console.log(todos.length)
+
+  const updateTodo = (id, newChecked)=> {
+    // console.log('updateTodo', id, newChecked);
+    // setTodos(todos.map((t) => t.id === id? {...t, libelle: newLibelle} : t));
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === id) {
+          return {...todo, checked: newChecked };
+        }
+        console.log(todos)
+        alert("Modification")
+        return todo;
+      })
+    )
   }
 
   
@@ -27,14 +46,20 @@ export default function App() {
         Hello world!
       </h1>
       <ul className="grid grid-cols-4 gap-2 p-5 list-disc list-inside">
-        {
+        {  
+        todos.length>0?
           todos.map((todo) =>
-            <li key={todo.id} className="flex items-center justify-around p-2 rounded-md bg-sky-200">
+            <li key={todo.id} className="flex items-center justify-around gap-1 p-2 rounded-md bg-sky-200">
+              <input type="checkbox"
+               checked={todo.checked}
+               onChange={
+                ()=> updateTodo(todo.id, !todo.checked,)
+              } className="w-4 h-4 form-checkbox" />
               <span className="flex-1">{todo.libelle}</span>
               <button onClick={()=> {
                 deleteTodo(todo.id)
-              }} className="p-1 bg-red-400 border-2 rounded-lg ">supprimer</button>
-            </li>)
+              }} className="p-1 text-xs bg-red-800 border-2 rounded-lg text-gray-50">supprimer</button>
+            </li>) : <li className="text-yellow-600">Pas de todo</li>
         }
       </ul>
       <div className="m-10">
