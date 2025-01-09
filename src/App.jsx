@@ -2,35 +2,51 @@ import { useState } from "react";
 
 export default function App() {
  
-  const [todos, setTodos] = useState(['todos', 'setTodos']);
+  const [todos, setTodos] = useState([{id:1, libelle:'todos'}, {id:2, libelle:'setTodos'}]);
 
   const onAction = async (formData) => {
-    const todo = formData.get('todos');
-    todos.unshift(todo);
-    setTodos([...todos]);
+    const todo = formData.get('todo');
+    // todos.unshift(todo);
+    // setTodos([...todos]);
+    setTodos([...todos, {
+      id: Date.now(),
+      libelle: todo,
+    }]);
   };
+  //, todo]); };
 
-  const ListTodo = todos.map((todo) =><li key={todo} className="underline">{todo}</li>);
-  console.log(ListTodo);
+  const deleteTodo = (id)=> {
+    setTodos(todos.filter((t) => t.id!== id));
+
+  }
+
   
   return (
     <div className="bg-gray-800 min-h-[100vh] w-full">
       <h1 className="p-2 text-3xl font-bold underline text-emerald-200">
         Hello world!
       </h1>
-      <ul className="text-lg text-white">
-       {ListTodo}
+      <ul className="grid grid-cols-4 gap-2 p-5 list-disc list-inside">
+        {
+          todos.map((todo) =>
+            <li key={todo.id} className="flex items-center justify-around p-2 rounded-md bg-sky-200">
+              <span className="flex-1">{todo.libelle}</span>
+              <button onClick={()=> {
+                deleteTodo(todo.id)
+              }} className="p-1 bg-red-400 border-2 rounded-lg ">supprimer</button>
+            </li>)
+        }
       </ul>
       <div className="m-10">
         <form
           action={onAction} 
-          className="flex items-center justify-center w-full gap-2 my-5"
+          className="flex items-center justify-center gap-2 my-5"
         >
           <input
             type="text"
             name="todo" 
             placeholder="La tâche!!"
-            className="flex-1 p-2 rounded-sm ring-stone-700"
+            className="flex-1 p-2 rounded-lg ring-stone-700"
           />
           <button type="submit" className="p-2 bg-blue-800 rounded-lg">
             Ajouter
