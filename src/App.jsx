@@ -10,8 +10,9 @@ export default function App() {
     setTodos([...todos]);
   };
 
-  const ListTodo = todos.map((todo) =><li className="underline">{todo}</li>);
+  const ListTodo = todos.map((todo) =><li key={todo} className="underline">{todo}</li>);
   console.log(ListTodo);
+  
   return (
     <div className="bg-gray-800 min-h-[100vh] w-full">
       <h1 className="p-2 text-3xl font-bold underline text-emerald-200">
