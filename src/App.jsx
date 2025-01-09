@@ -2,26 +2,32 @@ import { useState } from "react";
 
 export default function App() {
  
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState(['todos', 'setTodos']);
 
-  const onSubmit = (formData) => {};
+  const onAction = async (formData) => {
+    const todo = formData.get('todos');
+    todos.unshift(todo);
+    setTodos([...todos]);
+  };
+
+  const ListTodo = todos.map((todo) =><li className="underline">{todo}</li>);
+  console.log(ListTodo);
   return (
     <div className="bg-gray-800 min-h-[100vh] w-full">
       <h1 className="p-2 text-3xl font-bold underline text-emerald-200">
         Hello world!
       </h1>
+      <ul className="text-lg text-white">
+       {ListTodo}
+      </ul>
       <div className="m-10">
         <form
-          action={
-            (formData) => {
-              console.log(formData);
-            }
-          } // Utilisation de l'attribut action avec une fonction
+          action={onAction} 
           className="flex items-center justify-center w-full gap-2 my-5"
         >
           <input
             type="text"
-            name="todo" // Ajout de l'attribut name
+            name="todo" 
             placeholder="La tâche!!"
             className="flex-1 p-2 rounded-sm ring-stone-700"
           />
@@ -35,7 +41,16 @@ export default function App() {
 }
 
 
-// 
+// Controlled Input
+{/* <input type="text"
+      name="todo" 
+      value={todo}
+      onChange={(e)=> {
+        setTodos(e.target.value);
+      }}
+      placeholder="La tâche!!"
+      className="flex-1 p-2 rounded-sm ring-stone-700"
+    /> */}
 
 // LES STATES
 // function Button() {
