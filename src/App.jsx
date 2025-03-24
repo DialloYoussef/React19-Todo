@@ -51,23 +51,26 @@ export default function App() {
   // console.log(todos.length)
 
   const updateTodo = (id, newChecked)=> {
+    let modified = null;
     setTodos(
       todos.map((todo) => {
         if (todo.id === id) {
           return {...todo, checked: newChecked };
         }
         console.log(todos)
-        alert("Modification")
+        modified = todo;
         return todo;
       })
     )
+    alert("Status de " + modified.libelle + " Modifié!! ")
   }
 
   
   return (
     <div className="bg-gray-800 min-h-[100vh] w-full">
-      <h1 className="p-2 text-3xl font-bold underline text-emerald-200">
-        Hello world! {todos.length}
+      <h1 className="p-2 text-3xl font-bold text-emerald-200">
+        <span className="underline">Hello world!</span>
+        <span className="font-thin no-underline "> {todos.length} items</span>
       </h1>
       
       <div className="m-10">
@@ -101,7 +104,9 @@ export default function App() {
               <button onClick={()=> {
                 deleteTodo(todo.id)
               }} className="p-1 text-xs bg-red-800 border-2 rounded-lg text-gray-50">supprimer</button>
-            </li>) : <li className="text-yellow-600">Pas de todo</li>
+            </li>)
+             : 
+            <li className="text-yellow-600">Pas de todo</li>
         }
       </ul>
     </div>
@@ -157,5 +162,3 @@ export default function App() {
 //     </div>
 //   )
 // }
-
-
